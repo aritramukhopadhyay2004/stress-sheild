@@ -17,16 +17,20 @@ export default function HealthForm({ token }) {
     setLoading(true);
     
     try {
-      const response = await api.post('/api/health/reading', formData, { headers: { Authorization: `Bearer ${token}` } });
+      // ✅ FIX: Changed from '/api/health/reading' to '/api/health'
+      const response = await api.post('/api/health', formData, { 
+        headers: { Authorization: `Bearer ${token}` } 
+      });
       
       toast.success('Health data submitted successfully!');
       
-      if (response.data.stress_level === 'HIGH' || response.data.stress_level === 'CRITICAL') {
-        toast.error(`Alert: ${response.data.stress_level} stress detected!`, { duration: 5000 });
+      if (response.data.stressLevel === 'HIGH' || response.data.stressLevel === 'CRITICAL') {
+        toast.error(`Alert: ${response.data.stressLevel} stress detected!`, { duration: 5000 });
       }
       
-      setTimeout(() => navigate('/dashboard'), 1500);
+      setTimeout(() => navigate('/dashboard'), 2000);
     } catch (error) {
+      console.error('Submission error:', error);
       toast.error(error.response?.data?.error || 'Failed to submit data');
     } finally {
       setLoading(false);

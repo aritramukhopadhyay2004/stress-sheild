@@ -19,7 +19,20 @@ export default function Login({ setToken }) {
 
     try {
       const endpoint = isRegister ? '/api/auth/register' : '/api/auth/login';
-      const response = await api.post(endpoint, formData);
+      
+      // ✅ FIX: Format payload to match backend expectations
+      const payload = isRegister 
+        ? { 
+            email: formData.email, 
+            password: formData.password,
+            name: formData.full_name  // Backend expects 'name' not 'full_name'
+          }
+        : { 
+            email: formData.email, 
+            password: formData.password 
+          };
+
+      const response = await api.post(endpoint, payload);
 
       setToken(response.data.token);
       toast.success(isRegister ? 'Account created successfully!' : 'Logged in successfully!');

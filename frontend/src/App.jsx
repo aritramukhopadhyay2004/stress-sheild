@@ -6,15 +6,32 @@ import Dashboard from './pages/Dashboard';
 import HealthForm from './pages/HealthForm';
 
 function App() {
-  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true);
   
   useEffect(() => {
+    // Check for existing token on mount
+    const savedToken = localStorage.getItem('token');
+    setToken(savedToken);
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    // Sync token changes to localStorage
     if (token) {
       localStorage.setItem('token', token);
     } else {
       localStorage.removeItem('token');
     }
   }, [token]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
   
   return (
     <BrowserRouter>
@@ -34,7 +51,11 @@ function App() {
         />
         <Route 
           path="/" 
-          element={token ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />} 
+          element={<Navigate to={token ? "/dashboard" : "/login"} replace />} 
+        />
+        <Route 
+          path="*" 
+          element={<Navigate to={token ? "/dashboard" : "/login"} replace />} 
         />
       </Routes>
     </BrowserRouter>
