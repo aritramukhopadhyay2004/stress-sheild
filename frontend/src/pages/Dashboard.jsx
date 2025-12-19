@@ -516,7 +516,7 @@ const Dashboard = () => {
         {/* Submit New Data Button */}
         <div className="text-center">
           <button
-            onClick={() => navigate('/submit')}
+            onClick={() => navigate('/health-check')}
             className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-10 py-4 rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1"
           >
             Submit New Health Data
