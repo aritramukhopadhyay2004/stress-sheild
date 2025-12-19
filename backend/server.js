@@ -7,6 +7,10 @@ const socketIo = require('socket.io');
 require('dotenv').config();
 
 const app = express();
+
+// ✅ CRITICAL FIX: Trust Render's reverse proxy
+app.set('trust proxy', 1);
+
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: { origin: process.env.FRONTEND_URL || '*' }
@@ -22,9 +26,11 @@ const limiter = rateLimit({
   max: 100
 });
 app.use('/api/', limiter);
+
 app.get('/health', (req, res) => {
   res.json({ status: 'Backend is running!' });
 });
+
 // Routes
 const authRoutes = require('./routes/auth');
 const healthRoutes = require('./routes/health');
