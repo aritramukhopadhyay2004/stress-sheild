@@ -301,18 +301,22 @@ router.post('/', auth, async (req, res) => {
     }
 
     // Insert health reading
-    const { data: reading, error: readingError } = await supabase
-      .from('health_readings')
-      .insert({
-        user_id: req.user.id,
-        heart_rate: parseFloat(heart_rate),
-        skin_conductance: parseFloat(skin_conductance),
-        temperature: parseFloat(temperature),
-        stress_level: stressLevel,
-        stress_score: parseFloat(stressScore.toFixed(2)),
-      })
-      .select()
-      .single();
+const now = new Date().toISOString();
+const { data: reading, error: readingError } = await supabase
+  .from('health_readings')
+  .insert({
+    user_id: req.user.id,
+    heart_rate: parseFloat(heart_rate),
+    skin_conductance: parseFloat(skin_conductance),
+    temperature: parseFloat(temperature),
+    stress_level: stressLevel,
+    stress_score: parseFloat(stressScore.toFixed(2)),
+    recorded_at: now,  // ✅ ADD THIS
+    created_at: now,   // ✅ ADD THIS
+  })
+  .select()
+  .single();
+
 
     if (readingError) throw readingError;
 
