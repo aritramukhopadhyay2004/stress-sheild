@@ -20,10 +20,22 @@ function App() {
     <BrowserRouter>
       <Toaster position="top-right" />
       <Routes>
-        <Route path="/login" element={!token ? <Login setToken={setToken} /> : <Navigate to="/dashboard" />} />
-        <Route path="/dashboard" element={token ? <Dashboard token={token} setToken={setToken} /> : <Navigate to="/login" />} />
-        <Route path="/health-check" element={token ? <HealthForm token={token} /> : <Navigate to="/login" />} />
-        <Route path="/" element={<Navigate to="/dashboard" />} />
+        <Route 
+          path="/login" 
+          element={!token ? <Login setToken={setToken} /> : <Navigate to="/dashboard" replace />} 
+        />
+        <Route 
+          path="/dashboard" 
+          element={token ? <Dashboard token={token} setToken={setToken} /> : <Navigate to="/login" replace />} 
+        />
+        <Route 
+          path="/health-check" 
+          element={token ? <HealthForm token={token} /> : <Navigate to="/login" replace />} 
+        />
+        <Route 
+          path="/" 
+          element={token ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />} 
+        />
       </Routes>
     </BrowserRouter>
   );
