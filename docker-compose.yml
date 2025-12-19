@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - FRONTEND_URL=http://localhost:5173
+      - SUPABASE_URL=${SUPABASE_URL:-}
+    secrets:
+      - supabase_key
+      - supabase_url
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      - ml-service
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  frontend:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_BACKEND_URL=http://localhost:5000
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    depends_on:
+      - backend
+
+  ml-service:
+    build: ./ml-service
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+    volumes:
+      - ./ml-service:/app
+
+secrets:
+  supabase_key:
+    file: ./docker/secrets/supabase_key
+  supabase_url:
+    file: ./docker/secrets/supabase_url
+
+# Usage:
+# 1) Create a .env file at repo root with SUPABASE_URL and SUPABASE_KEY (if needed), or create docker secrets with the commands below.
+# 2) Run `docker compose up --build` to start services for local development.
+# 3) To use Docker secrets instead of .env values:
+#    - echo "your_key_value" | docker secret create supabase_key -
+#    - echo "https://your.supabase.url" | docker secret create supabase_url -
+#    - Then `docker stack deploy -c docker-compose.yml mystack` (secrets are supported with docker swarm stacks)
+# Notes:
+# - frontend runs Vite in dev mode bound to 0.0.0.0 so it is reachable from host
+# - backend listens on PORT (defaults to 5000), and has a healthcheck that hits /health
+# - ml-service is built from ./ml-service and expected to expose port 8000
+# - When using Docker secrets, the backend service reads secret files mounted at /run/secrets/<name> by default
+
