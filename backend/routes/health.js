@@ -123,7 +123,6 @@ function generateInterventions(stressLevel, stressScore, heartRate, temperature)
   const interventions = [];
 
   if (stressLevel === 'CRITICAL' || stressScore >= 9) {
-    // CRITICAL MEDICATIONS
     const criticalMeds = MEDICATION_DATABASE.CRITICAL;
     
     interventions.push({
@@ -164,7 +163,6 @@ function generateInterventions(stressLevel, stressScore, heartRate, temperature)
     });
 
   } else if (stressLevel === 'HIGH' || stressScore >= 7) {
-    // HIGH STRESS MEDICATIONS
     const highMeds = MEDICATION_DATABASE.HIGH;
     
     interventions.push({
@@ -205,7 +203,6 @@ function generateInterventions(stressLevel, stressScore, heartRate, temperature)
     });
 
   } else if (stressLevel === 'MODERATE' || stressScore >= 5) {
-    // MODERATE STRESS MEDICATIONS
     const moderateMeds = MEDICATION_DATABASE.MODERATE;
     
     interventions.push({
@@ -239,7 +236,6 @@ function generateInterventions(stressLevel, stressScore, heartRate, temperature)
     });
 
   } else {
-    // LOW STRESS - MAINTENANCE
     interventions.push({
       intervention_type: 'MAINTENANCE',
       category: 'WELLNESS',
@@ -268,7 +264,8 @@ router.post('/', auth, async (req, res) => {
       return res.status(400).json({ error: 'All health metrics are required' });
     }
 
-    // Call ML service for stress prediction
+    // ✅ ======== UPDATED SECTION STARTS HERE ========
+    // Call ML service for stress prediction with robust fallback
     let stressLevel = 'MODERATE';
     let stressScore = 5.0;
 
@@ -278,45 +275,56 @@ router.post('/', auth, async (req, res) => {
         skin_conductance: parseFloat(skin_conductance),
         temperature: parseFloat(temperature),
       }, {
-        timeout: 5000,
+        timeout: 10000, // ✅ Increased timeout to 10 seconds
       });
 
       stressLevel = mlResponse.data.stress_level;
       stressScore = mlResponse.data.stress_score;
+      
+      console.log('✅ ML Service responded:', { stressLevel, stressScore });
     } catch (mlError) {
-      console.error('ML Service error:', mlError.message);
-      // Fallback calculation
-      const avgScore = (
-        (heart_rate - 60) / 10 +
-        skin_conductance +
-        (temperature - 36) * 2
-      ) / 3;
+      console.error('⚠️ ML Service unavailable, using fallback calculation:', mlError.message);
+      
+      // ✅ IMPROVED FALLBACK: More accurate stress calculation
+      const hr = parseFloat(heart_rate);
+      const sc = parseFloat(skin_conductance);
+      const temp = parseFloat(temperature);
+      
+      // Normalize each metric (0-10 scale)
+      const hrScore = Math.max(0, Math.min(10, (hr - 60) / 8)); // 60-140 bpm range
+      const scScore = Math.min(10, sc); // Direct skin conductance
+      const tempScore = Math.max(0, Math.min(10, (temp - 36.5) * 5)); // 36.5-38.5°C range
+      
+      // Weighted average (HR: 40%, SC: 40%, Temp: 20%)
+      stressScore = (hrScore * 0.4 + scScore * 0.4 + tempScore * 0.2);
+      stressScore = Math.max(0, Math.min(10, parseFloat(stressScore.toFixed(2))));
 
-      stressScore = Math.max(0, Math.min(10, avgScore));
-
-      if (stressScore >= 8) stressLevel = 'CRITICAL';
-      else if (stressScore >= 6) stressLevel = 'HIGH';
-      else if (stressScore >= 4) stressLevel = 'MODERATE';
+      // Determine stress level
+      if (stressScore >= 8.5) stressLevel = 'CRITICAL';
+      else if (stressScore >= 6.5) stressLevel = 'HIGH';
+      else if (stressScore >= 4.0) stressLevel = 'MODERATE';
       else stressLevel = 'LOW';
+      
+      console.log('📊 Fallback calculation:', { hr, sc, temp, stressScore, stressLevel });
     }
+    // ✅ ======== UPDATED SECTION ENDS HERE ========
 
     // Insert health reading
-const now = new Date().toISOString();
-const { data: reading, error: readingError } = await supabase
-  .from('health_readings')
-  .insert({
-    user_id: req.user.id,
-    heart_rate: parseFloat(heart_rate),
-    skin_conductance: parseFloat(skin_conductance),
-    temperature: parseFloat(temperature),
-    stress_level: stressLevel,
-    stress_score: parseFloat(stressScore.toFixed(2)),
-    recorded_at: now,  // ✅ ADD THIS
-    created_at: now,   // ✅ ADD THIS
-  })
-  .select()
-  .single();
-
+    const now = new Date().toISOString();
+    const { data: reading, error: readingError } = await supabase
+      .from('health_readings')
+      .insert({
+        user_id: req.user.id,
+        heart_rate: parseFloat(heart_rate),
+        skin_conductance: parseFloat(skin_conductance),
+        temperature: parseFloat(temperature),
+        stress_level: stressLevel,
+        stress_score: parseFloat(stressScore.toFixed(2)),
+        recorded_at: now,
+        created_at: now,
+      })
+      .select()
+      .single();
 
     if (readingError) throw readingError;
 
