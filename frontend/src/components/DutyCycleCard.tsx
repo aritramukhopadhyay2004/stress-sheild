@@ -15,64 +15,64 @@ export const DutyCycleCard: React.FC<DutyCycleCardProps> = ({ activeMinutes, res
 
   const activePercent = Math.round((activeMinutes / totalMinutes) * 100);
 
-  // SVG Circular progress ring
-  const strokeWidth = 8;
-  const radius = 38;
+  // SVG Circular progress ring with non-clipping viewBox (center 48,48, r 36)
+  const strokeWidth = 7;
+  const radius = 36;
   const circumference = 2 * Math.PI * radius;
   const progressOffset = circumference - (activePercent / 100) * circumference;
 
   return (
-    <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between">
+    <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between h-full">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-sky-50 border border-sky-200 flex items-center justify-center text-sky-600">
-            <Clock className="w-4 h-4" />
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-xl bg-sky-50 border border-sky-200/80 flex items-center justify-center text-sky-600 shrink-0">
+            <Clock className="w-4.5 h-4.5" />
           </div>
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500">Duty Cycle Ratio</h3>
-            <p className="text-[11px] text-slate-400 font-medium">Work vs Physiological Recovery</p>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">Duty Cycle Ratio</h3>
+            <p className="text-[11px] text-slate-400 font-medium leading-tight">Work vs Physiological Recovery</p>
           </div>
         </div>
-        <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-sky-50 text-sky-700 border border-sky-200">
+        <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-sky-50 text-sky-700 border border-sky-200 shrink-0">
           Optimal Shift Ratio
         </span>
       </div>
 
       {/* Main Gauge & Value Display */}
-      <div className="flex items-center justify-between my-3">
+      <div className="flex items-center justify-between my-4">
         <div>
           <div className="text-2xl font-extrabold text-slate-800 tracking-tight">
-            {activeHours}h {activeRems}m <span className="text-xs font-medium text-slate-400">Active</span>
+            {activeHours}h {activeRems}m <span className="text-xs font-semibold text-slate-400">Active</span>
           </div>
           <div className="flex items-center gap-2 mt-1.5 text-xs text-slate-500 font-medium">
-            <span className="flex items-center gap-1 text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
-              <Coffee className="w-3 h-3" />
+            <span className="flex items-center gap-1 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200/80">
+              <Coffee className="w-3 h-3 text-emerald-600" />
               {restHours}h {restRems}m Rest
             </span>
-            <span className="flex items-center gap-1 text-sky-600 bg-sky-50 px-2 py-0.5 rounded-md border border-sky-200">
-              <BatteryCharging className="w-3 h-3" />
+            <span className="flex items-center gap-1 text-sky-700 bg-sky-50 px-2 py-0.5 rounded-md border border-sky-200/80">
+              <BatteryCharging className="w-3 h-3 text-sky-600" />
               88% Recovery
             </span>
           </div>
         </div>
 
-        {/* Ring Chart */}
-        <div className="relative w-20 h-20 flex items-center justify-center">
-          <svg className="w-20 h-20 transform -rotate-90">
+        {/* Ring Chart - Perfectly formatted with viewBox="0 0 96 96" to prevent clipping */}
+        <div className="relative w-20 h-20 flex items-center justify-center shrink-0">
+          <svg className="w-20 h-20 transform -rotate-90 overflow-visible" viewBox="0 0 96 96">
             <circle
-              cx="40"
-              cy="40"
+              cx="48"
+              cy="48"
               r={radius}
-              stroke="#10b981" // Rest portion color
+              stroke="#10b981" // Rest portion color (Emerald)
               strokeWidth={strokeWidth}
               fill="transparent"
             />
             <circle
-              cx="40"
-              cy="40"
+              cx="48"
+              cy="48"
               r={radius}
-              stroke="#0284c7" // Active portion color
+              stroke="#0284c7" // Active portion color (Sky)
               strokeWidth={strokeWidth}
               strokeDasharray={circumference}
               strokeDashoffset={progressOffset}
@@ -81,17 +81,17 @@ export const DutyCycleCard: React.FC<DutyCycleCardProps> = ({ activeMinutes, res
               className="transition-all duration-500 ease-out"
             />
           </svg>
-          <div className="absolute text-center">
-            <span className="text-xs font-extrabold text-slate-800">{activePercent}%</span>
-            <span className="block text-[8px] font-semibold text-slate-400 uppercase">Duty</span>
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <span className="text-xs font-extrabold text-slate-800 leading-none">{activePercent}%</span>
+            <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Duty</span>
           </div>
         </div>
       </div>
 
-      {/* Duty Bar Summary */}
+      {/* Duty Bar Summary Footer */}
       <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
         <span className="font-medium">Next Recommended Rest Break:</span>
-        <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+        <span className="font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200">
           In 45 mins
         </span>
       </div>
