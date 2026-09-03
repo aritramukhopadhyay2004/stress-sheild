@@ -2,58 +2,41 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { createClient } = require('@supabase/supabase-js');
-
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_KEY
-);
+const auth = require('../middleware/auth');
+const db = require('../config/db');
 
 // Register
 router.post('/register', async (req, res) => {
   try {
-    const { email, password, name } = req.body;
+    const { email, password, name, age, gender } = req.body;
 
-    // Validate input
     if (!email || !password || !name) {
-      return res.status(400).json({ error: 'All fields are required' });
+      return res.status(400).json({ error: 'Name, email, and password are required' });
     }
 
-    // Check if user exists
-    const { data: existingUser } = await supabase
-      .from('users')
-      .select('*')
-      .eq('email', email)
-      .single();
-
+    const existingUser = await db.findUserByEmail(email);
     if (existingUser) {
-      return res.status(400).json({ error: 'User already exists' });
+      return res.status(400).json({ error: 'User already exists with this email' });
     }
 
-    // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create user
-    const { data: user, error } = await supabase
-      .from('users')
-      .insert({
-        email,
-        password: hashedPassword,
-        name,
-      })
-      .select()
-      .single();
+    const user = await db.createUser({
+      email,
+      password: hashedPassword,
+      name,
+      age,
+      gender
+    });
 
-    if (error) throw error;
-
-    // Create token
+    const jwtSecret = process.env.JWT_SECRET || 'fallback-jwt-secret';
     const token = jwt.sign(
       { 
         userId: user.id,
         email: user.email 
       },
-      process.env.JWT_SECRET,
+      jwtSecret,
       { expiresIn: '7d' }
     );
 
@@ -66,8 +49,8 @@ router.post('/register', async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('Registration error:', error);
-    res.status(500).json({ error: 'Registration failed' });
+    console.error('Registration error details:', error);
+    res.status(500).json({ error: 'Registration failed: ' + (error.message || 'Server error') });
   }
 });
 
@@ -76,36 +59,27 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Validate input
     if (!email || !password) {
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    // Get user
-    const { data: user, error } = await supabase
-      .from('users')
-      .select('*')
-      .eq('email', email)
-      .single();
-
-    if (error || !user) {
+    const user = await db.findUserByEmail(email);
+    if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    // Verify password
     const isValidPassword = await bcrypt.compare(password, user.password);
-
     if (!isValidPassword) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    // Create token
+    const jwtSecret = process.env.JWT_SECRET || 'fallback-jwt-secret';
     const token = jwt.sign(
       { 
         userId: user.id,
         email: user.email 
       },
-      process.env.JWT_SECRET,
+      jwtSecret,
       { expiresIn: '7d' }
     );
 
@@ -118,8 +92,29 @@ router.post('/login', async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ error: 'Login failed' });
+    console.error('Login error details:', error);
+    res.status(500).json({ error: 'Login failed: ' + (error.message || 'Server error') });
+  }
+});
+
+// Validate Token
+router.get('/validate', auth, async (req, res) => {
+  try {
+    const user = await db.findUserById(req.user.id);
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid user session' });
+    }
+
+    res.json({
+      valid: true,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      }
+    });
+  } catch (error) {
+    res.status(401).json({ error: 'Token validation failed' });
   }
 });
 

@@ -1,0 +1,205 @@
+{
+  "users": [
+    {
+      "id": "1787998617936",
+      "email": "testuser_1787998617935@example.com",
+      "password": "hashedpassword123",
+      "name": "Test User",
+      "age": 28,
+      "gender": "Male",
+      "created_at": "2026-08-29T10:16:57.936Z"
+    },
+    {
+      "id": "1787999157809",
+      "email": "bnmhmhmgf@gmail.com",
+      "password": "$2a$10$NGxOoxCAdwtWqs8YLqTxL.IlVjEqKaVvXrBF0JkznAH2assOx2Ppi",
+      "name": "Aritra Mukhopadhyay",
+      "age": null,
+      "gender": null,
+      "created_at": "2026-08-29T10:25:57.809Z"
+    },
+    {
+      "id": "1788110439237",
+      "email": "testatstress@gmail.com",
+      "password": "$2a$10$ktKJkVUIGzYi2D/WFrwmZeGMp/Axq0HssZeGsC.h3ew4vKVuvso.e",
+      "name": "test",
+      "age": null,
+      "gender": null,
+      "created_at": "2026-08-30T17:20:39.237Z"
+    }
+  ],
+  "health_readings": [
+    {
+      "id": "1788110588603",
+      "user_id": "1788110439237",
+      "heart_rate": 65,
+      "skin_conductance": 0.5,
+      "temperature": 40,
+      "stress_level": "MODERATE",
+      "stress_score": 5,
+      "recorded_at": "2026-08-30T17:23:08.603Z",
+      "created_at": "2026-08-30T17:23:08.603Z"
+    },
+    {
+      "id": "1788110475216",
+      "user_id": "1788110439237",
+      "heart_rate": 75,
+      "skin_conductance": 2.5,
+      "temperature": 37,
+      "stress_level": "MODERATE",
+      "stress_score": 5,
+      "recorded_at": "2026-08-30T17:21:15.216Z",
+      "created_at": "2026-08-30T17:21:15.216Z"
+    },
+    {
+      "id": "1787999236798",
+      "user_id": "1787999157809",
+      "heart_rate": 75,
+      "skin_conductance": 2.5,
+      "temperature": 37,
+      "stress_level": "LOW",
+      "stress_score": 1.98,
+      "recorded_at": "2026-08-29T10:27:16.798Z",
+      "created_at": "2026-08-29T10:27:16.798Z"
+    }
+  ],
+  "alerts": [],
+  "interventions": [
+    {
+      "id": "1788110589534",
+      "user_id": "1788110439237",
+      "intervention_type": "OPTIONAL_MEDICATION",
+      "category": "SUPPORT",
+      "description": "MODERATE STRESS - Non-Prescription & Anxiolytic Options",
+      "medications": [
+        {
+          "name": "Buspirone (BuSpar)",
+          "category": "Anxiolytic - Non-Sedating",
+          "dosage": "5-10 mg",
+          "frequency": "Twice or three times daily",
+          "max_daily": "60 mg per day",
+          "duration": "3-6 months",
+          "purpose": "Chronic anxiety without sedation",
+          "sideEffects": "Dizziness, nausea, nervousness",
+          "warnings": "Takes 2-4 weeks to show effects",
+          "contraindications": "MAOIs within 14 days"
+        },
+        {
+          "name": "L-Theanine (Supplement)",
+          "category": "Natural Supplement - OTC",
+          "dosage": "200 mg",
+          "frequency": "1-2 times daily",
+          "max_daily": "400 mg per day",
+          "duration": "Ongoing use is safe",
+          "purpose": "Mild anxiety reduction, promotes relaxation",
+          "sideEffects": "Minimal - rare headaches",
+          "warnings": "Natural amino acid from green tea",
+          "contraindications": "Generally safe, consult for pregnancy"
+        }
+      ],
+      "urgency": "MEDIUM",
+      "medical_note": "Consider non-sedating options or natural supplements under medical guidance.",
+      "completed": true,
+      "created_at": "2026-08-30T17:23:09.534Z",
+      "completed_at": "2026-08-30T17:24:09.532Z"
+    },
+    {
+      "id": "1788110589534",
+      "user_id": "1788110439237",
+      "intervention_type": "MEDITATION",
+      "category": "MENTAL_HEALTH",
+      "description": "Guided 10-minute mindfulness meditation session.",
+      "medications": [],
+      "urgency": "MEDIUM",
+      "medical_note": null,
+      "completed": false,
+      "created_at": "2026-08-30T17:23:09.534Z"
+    },
+    {
+      "id": "1788110589534",
+      "user_id": "1788110439237",
+      "intervention_type": "HYDRATION",
+      "category": "PHYSICAL",
+      "description": "Drink 500ml of cold water to lower core body temperature and pulse.",
+      "medications": [],
+      "urgency": "MEDIUM",
+      "medical_note": null,
+      "completed": false,
+      "created_at": "2026-08-30T17:23:09.534Z"
+    },
+    {
+      "id": "1788110475559",
+      "user_id": "1788110439237",
+      "intervention_type": "OPTIONAL_MEDICATION",
+      "category": "SUPPORT",
+      "description": "MODERATE STRESS - Non-Prescription & Anxiolytic Options",
+      "medications": [
+        {
+          "name": "Buspirone (BuSpar)",
+          "category": "Anxiolytic - Non-Sedating",
+          "dosage": "5-10 mg",
+          "frequency": "Twice or three times daily",
+          "max_daily": "60 mg per day",
+          "duration": "3-6 months",
+          "purpose": "Chronic anxiety without sedation",
+          "sideEffects": "Dizziness, nausea, nervousness",
+          "warnings": "Takes 2-4 weeks to show effects",
+          "contraindications": "MAOIs within 14 days"
+        },
+        {
+          "name": "L-Theanine (Supplement)",
+          "category": "Natural Supplement - OTC",
+          "dosage": "200 mg",
+          "frequency": "1-2 times daily",
+          "max_daily": "400 mg per day",
+          "duration": "Ongoing use is safe",
+          "purpose": "Mild anxiety reduction, promotes relaxation",
+          "sideEffects": "Minimal - rare headaches",
+          "warnings": "Natural amino acid from green tea",
+          "contraindications": "Generally safe, consult for pregnancy"
+        }
+      ],
+      "urgency": "MEDIUM",
+      "medical_note": "Consider non-sedating options or natural supplements under medical guidance.",
+      "completed": true,
+      "created_at": "2026-08-30T17:21:15.559Z",
+      "completed_at": "2026-08-30T17:24:01.280Z"
+    },
+    {
+      "id": "1788110475559",
+      "user_id": "1788110439237",
+      "intervention_type": "MEDITATION",
+      "category": "MENTAL_HEALTH",
+      "description": "Guided 10-minute mindfulness meditation session.",
+      "medications": [],
+      "urgency": "MEDIUM",
+      "medical_note": null,
+      "completed": false,
+      "created_at": "2026-08-30T17:21:15.559Z"
+    },
+    {
+      "id": "1788110475559",
+      "user_id": "1788110439237",
+      "intervention_type": "HYDRATION",
+      "category": "PHYSICAL",
+      "description": "Drink 500ml of cold water to lower core body temperature and pulse.",
+      "medications": [],
+      "urgency": "MEDIUM",
+      "medical_note": null,
+      "completed": false,
+      "created_at": "2026-08-30T17:21:15.559Z"
+    },
+    {
+      "id": "1787999236813",
+      "user_id": "1787999157809",
+      "intervention_type": "PREVENTIVE",
+      "category": "WELLNESS",
+      "description": "Stress levels optimal. Maintain current work-rest balance.",
+      "medications": [],
+      "urgency": "LOW",
+      "medical_note": null,
+      "completed": false,
+      "created_at": "2026-08-29T10:27:16.814Z"
+    }
+  ]
+}

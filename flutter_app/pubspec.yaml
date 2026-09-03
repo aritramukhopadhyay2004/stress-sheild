@@ -1,0 +1,27 @@
+name: neurorest_flutter
+description: "NeuroRest - Real-time Occupational Stress Monitoring, Bluetooth Smartwatch Pairing & AI Clinical Triage"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_blue_plus: ^1.31.0
+  fl_chart: ^0.68.0
+  http: ^1.2.0
+  provider: ^6.1.1
+  google_fonts: ^6.1.0
+  cupertino_icons: ^1.0.6
+  intl: ^0.19.0
+  health: ^11.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true

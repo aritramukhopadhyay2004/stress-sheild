@@ -27,9 +27,24 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
+app.get('/', (req, res) => {
+  res.json({
+    service: 'Stress-Shield Backend API',
+    status: 'online',
+    endpoints: {
+      health: 'GET /health',
+      auth: '/api/auth',
+      health_data: '/api/health',
+      alerts: '/api/alerts',
+      iot_sensor_data: 'POST /api/health/iot-sensor-data'
+    }
+  });
+});
+
 app.get('/health', (req, res) => {
   res.json({ status: 'Backend is running!' });
 });
+
 
 // Routes
 const authRoutes = require('./routes/auth');
