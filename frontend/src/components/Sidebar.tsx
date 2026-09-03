@@ -7,7 +7,6 @@ import {
   Pill,
   Stethoscope,
   User,
-  Settings,
   LogOut,
   ShieldAlert,
   Sparkles
@@ -29,8 +28,7 @@ export const Sidebar: React.FC = () => {
     { name: 'Wellness', path: '/wellness', icon: HeartPulse },
     { name: 'Medication', path: '/medication', icon: Pill },
     { name: 'AI Triage', path: '/triage', icon: Stethoscope },
-    { name: 'Profile', path: '/profile', icon: User },
-    { name: 'Settings', path: '/settings', icon: Settings }
+    { name: 'Profile', path: '/profile', icon: User }
   ];
 
   return (

@@ -9,7 +9,6 @@ import { Analytics } from './pages/Analytics.tsx';
 import { Wellness } from './pages/Wellness.tsx';
 import { MedicationPage } from './pages/MedicationPage.tsx';
 import { Profile } from './pages/Profile.tsx';
-import { Settings } from './pages/Settings.tsx';
 
 const ProtectedLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated } = useAuth();
@@ -80,14 +79,6 @@ export function App() {
             element={
               <ProtectedLayout>
                 <Profile />
-              </ProtectedLayout>
-            }
-          />
-          <Route
-            path="/settings"
-            element={
-              <ProtectedLayout>
-                <Settings />
               </ProtectedLayout>
             }
           />
